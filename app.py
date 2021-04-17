@@ -1,21 +1,18 @@
-import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, Tk, filedialog, Frame, RIGHT
+from components.MenuBar import MenuBar
+from components.Canvas import Canvas
 
-class Application(tk.Frame):
+class Application(Frame):
   def __init__(self, master=None):
-    super().__init__(master, width=480, height=360, bg="blue")
+    super().__init__(master, width=800, height=600, bg="blue")
     self.master = master
     self.pack()
     self.propagate(0)
-    self.create_widgets()
+    self.insert_canvas()
 
-  def create_widgets(self):
-    self.hi_there = tk.Button(self, text="Hello World", command=lambda: self.hello_world())
-    self.hi_there.pack(side="top")
-
-    self.quit = tk.Button(self, text="QUIT", fg="red", command=self.master.destroy)
-
-    self.quit.pack(side="bottom")
+  def insert_canvas(self):
+    self.canvas = Canvas(self)
+    self.canvas.pack(side = RIGHT)
 
   def hello_world(self, name="world"):
     return messagebox.showinfo(title="hello", message="Hello there, {}!".format(name))
@@ -23,9 +20,32 @@ class Application(tk.Frame):
   def say_hi(self):
     print("hi there, everyone!")
 
-root = tk.Tk()
-root.title("teste")
-root.geometry("800x600")
-root.resizable(0, 0)
-app = Application(master=root)
-app.mainloop()
+class master(Tk):
+  def __init__(self):
+    super().__init__()
+    self.configure()
+    self.add_menubar()
+    self.app = Application(master=self)
+    self.app.mainloop()
+
+  def configure(self):
+    self.title("teste")
+    self.geometry("800x600")
+    self.resizable(0, 0)
+
+  def add_menubar(self):
+    menu_bar = MenuBar(master=self)
+    self.config(menu=menu_bar.menubar)
+
+  def open_file(self):
+    path = filedialog.askopenfilename()
+    if path != "":
+      print(path)
+      self.app.canvas.load_image(path)
+
+
+#root = master()
+#app = Application(master=root)
+#app.mainloop()
+
+master()

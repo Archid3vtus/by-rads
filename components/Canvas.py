@@ -11,6 +11,8 @@ class Canvas(Canvas):
     self.width = self.master.winfo_width() 
     self.region_info = {}
     self.select_region_enable = False
+    self.load = None
+    self.load_bkp = None
 
     super().__init__(self.master, height=self.height, width=self.width, cursor="tcross", bg="grey")
     self._add_scroll_bars()
@@ -23,11 +25,16 @@ class Canvas(Canvas):
     self.load = Image.open(path)
     self.insert_image(self.load)
     self.select_region_enable = True
+    self.parent_frame.toolbar.change_button_state(0, "disabled")
+    self.parent_frame.toolbar.change_button_state(1, "disabled")
+    self.parent_frame.toolbar.change_button_state(2, "disabled")
+    self.parent_frame.toolbar.change_button_state(3, "disabled")
+    self.parent_frame.toolbar.change_button_state(4, "disabled")
 
   def load_image_crop(self, resolution):
     cropped = self.load.crop((self.region_info["initial_x"], self.region_info["initial_y"], self.region_info["final_x"], self.region_info["final_y"]))
     resized = cropped.resize(resolution)
-    self.load = resized
+    self.load = self.load_bkp = resized
     self.insert_image(self.load)
     self.delete(self.master.region_of_interest)
     self.select_region_enable = False
@@ -37,9 +44,20 @@ class Canvas(Canvas):
     self.parent_frame.toolbar.change_button_state(3, "active")
     self.parent_frame.toolbar.change_button_state(4, "active")
 
+  def set_color_spectre(self, colors_qt):
+    self.load = self.load_bkp
+    configured = self.load.quantize(colors_qt)
+    self.load_bkp = self.load
+    self.load = configured
+    self.insert_image(configured)
+
+  def set_image_zoom(self, value):
+    double_value = value/100
+    zoomed = self.load.resize((int(self.load.size[0]*double_value), int(self.load.size[1]*double_value)))
+    self.insert_image(zoomed)
+
 
   def insert_image(self, load):
-    print(load)
     self.width, self.height = load.size[0], load.size[1]
     self.master.image = image = ImageTk.PhotoImage(load)
     self.config(heigh = self.height, width = self.width)
@@ -50,7 +68,8 @@ class Canvas(Canvas):
 
   def select_region(self, event):
     if self.select_region_enable:
-      x, y = event.x, event.y
+      #x, y = event.x, event.y
+      x, y = self.canvasx(event.x), self.canvasy(event.y)
       self.region_info = {"initial_x": x - 64, "initial_y": y - 64, "final_x": (x-64) + 128, "final_y": (y-64) + 128}
       self.draw_box({"x": x, "y": y})
 

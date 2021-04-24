@@ -14,7 +14,7 @@ class ToolBar(Frame):
   def _add_buttons(self):
     self.buttons.append(Button(self, text="32", command=self._select_32x32, height=30, width=30, state="disabled"))
     self.buttons.append(Button(self, text="64", command=self._select_64x64, height=30, width=30, state="disabled"))
-    self.buttons.append(Button(self, text="128", command=self._select_256_colors, height=30, width=30, state="disabled"))
+    self.buttons.append(Button(self, text="256", command=self._select_256_colors, height=30, width=30, state="disabled"))
     self.buttons.append(Button(self, text="32", command=self._select_32_colors, height=30, width=30, state="disabled"))
     self.buttons.append(Button(self, text="16", command=self._select_16_colors, height=30, width=30, state="disabled"))
 
@@ -39,14 +39,13 @@ class ToolBar(Frame):
     self.master.canvas.load_image_crop((32,32))
 
   def _select_256_colors(self):
-    return
+    self.master.canvas.set_color_spectre(256)
 
   def _select_32_colors(self):
-
-    return
+    self.master.canvas.set_color_spectre(32)
 
   def _select_16_colors(self):
-    return
+    self.master.canvas.set_color_spectre(16)
 
   def change_button_state(self, index, state):
     self.buttons[index].configure(state = state)

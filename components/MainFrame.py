@@ -1,6 +1,7 @@
 from tkinter import Frame, LEFT, BOTH
 from components.Canvas import Canvas
 from components.ToolBar import ToolBar
+from components.ZoomBar import ZoomBar
 
 class MainFrame(Frame):
   canvas: Canvas
@@ -9,6 +10,10 @@ class MainFrame(Frame):
     self.master = master
     super().__init__(self.master, width=800, height=600, bg="blue")
     self.place(x = 0,y = 0,width = 800,height = 600)
+
+    #insert zoombar
+    self.zoombar = ZoomBar(self)
+    self.zoombar.place(x = 0, y = 570, width = 800, height = 30)
 
     #insert toolbar
     self.toolbar = ToolBar(self)

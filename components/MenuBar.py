@@ -9,10 +9,7 @@ class MenuBar():
   
   def add_filemenu_commands(self):
     self.filemenu = Menu(self.menubar, tearoff=0)
-    #self.filemenu.add_command(label="New", command=self.donothing)
     self.filemenu.add_command(label="Open", command=self.master.open_file)
-    #self.filemenu.add_command(label="Save", command=self.donothing)
-    #self.filemenu.add_command(label="Save as...", command=self.donothing)
 
     self.filemenu.add_separator()
     

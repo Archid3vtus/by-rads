@@ -30,7 +30,8 @@ class ResolutionDialog():
     return
 
   def select_32(self):
-    print("32")
+    #print("32")
+    self.parent.canvas.load_image_crop("32x32")
     return
 
   def add_butons(self):

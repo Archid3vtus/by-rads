@@ -23,7 +23,6 @@ class master(Tk):
   def open_file(self):
     path = filedialog.askopenfilename()
     if path != "":
-      print(path)
       self.app.canvas.load_image(path)
 
 if __name__ == '__main__':

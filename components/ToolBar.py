@@ -17,6 +17,7 @@ class ToolBar(Frame):
     self.buttons.append(Button(self, text="256", command=self._select_256_colors, height=30, width=30, state="disabled"))
     self.buttons.append(Button(self, text="32", command=self._select_32_colors, height=30, width=30, state="disabled"))
     self.buttons.append(Button(self, text="16", command=self._select_16_colors, height=30, width=30, state="disabled"))
+    self.buttons.append(Button(self, text="e", command=self._equalize, height=30, width=30, state="disabled"))
 
     x, y = 0, 0
     for i in range(len(self.buttons)):
@@ -46,6 +47,9 @@ class ToolBar(Frame):
 
   def _select_16_colors(self):
     self.master.canvas.set_color_spectre(16)
+
+  def _equalize(self):
+    self.master.canvas.equalize()
 
   def change_button_state(self, index, state):
     self.buttons[index].configure(state = state)

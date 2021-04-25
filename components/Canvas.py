@@ -1,5 +1,5 @@
 from tkinter import Canvas, Scrollbar, Frame, NW, BOTTOM, RIGHT, X, Y
-from PIL import Image, ImageTk
+from PIL import Image, ImageOps, ImageTk
 from components.ResolutionDialog import ResolutionDialog
 
 class Canvas(Canvas):
@@ -30,6 +30,7 @@ class Canvas(Canvas):
     self.parent_frame.toolbar.change_button_state(2, "disabled")
     self.parent_frame.toolbar.change_button_state(3, "disabled")
     self.parent_frame.toolbar.change_button_state(4, "disabled")
+    self.parent_frame.toolbar.change_button_state(5, "disabled")
 
   def load_image_crop(self, resolution):
     cropped = self.load.crop((self.region_info["initial_x"], self.region_info["initial_y"], self.region_info["final_x"], self.region_info["final_y"]))
@@ -43,11 +44,12 @@ class Canvas(Canvas):
     self.parent_frame.toolbar.change_button_state(2, "active")
     self.parent_frame.toolbar.change_button_state(3, "active")
     self.parent_frame.toolbar.change_button_state(4, "active")
+    self.parent_frame.toolbar.change_button_state(5, "active")
 
   def set_color_spectre(self, colors_qt):
     self.load = self.load_bkp
     configured = self.load.quantize(colors_qt)
-    self.load_bkp = self.load
+    #self.load_bkp = self.load
     self.load = configured
     self.insert_image(configured)
 
@@ -55,6 +57,12 @@ class Canvas(Canvas):
     double_value = value/100
     zoomed = self.load.resize((int(self.load.size[0]*double_value), int(self.load.size[1]*double_value)))
     self.insert_image(zoomed)
+
+  def equalize(self):
+    #self.load = self.load_bkp
+    equalized = ImageOps.equalize(self.load)
+    self.load = equalized
+    self.insert_image(self.load)
 
 
   def insert_image(self, load):

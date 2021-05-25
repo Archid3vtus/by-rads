@@ -25,5 +25,10 @@ class master(Tk):
     if path != "":
       self.app.canvas.load_image(path)
 
+  def open_file_to_train(self):
+    path = filedialog.askopenfilenames(parent=self, title="Choose a file")
+
+    print(path)
+
 if __name__ == '__main__':
   master()

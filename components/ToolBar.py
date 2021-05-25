@@ -1,9 +1,10 @@
 from tkinter import Frame, Button, TOP
 from components.ResolutionDialog import ResolutionDialog
+from typing import List
 
 class ToolBar(Frame):
   master: Frame
-  buttons: [Button] 
+  buttons: List[Button]
 
   def __init__(self, master: Frame):
     self.master = master

@@ -1,6 +1,7 @@
 from tkinter import Canvas, Scrollbar, Frame, NW, BOTTOM, RIGHT, X, Y
 from PIL import Image, ImageOps, ImageTk
 from components.ResolutionDialog import ResolutionDialog
+from description.GrayScaleOccurrence import GrayScaleOccurrence
 
 class Canvas(Canvas):
   def __init__(self, master):
@@ -52,6 +53,10 @@ class Canvas(Canvas):
     #self.load_bkp = self.load
     self.load = configured
     self.insert_image(configured)
+    gso = GrayScaleOccurrence(colors_qt, self.load)
+    gso.relate(4, -1, -1)
+    #gso.print_cooccurrence()
+    print("Homogeneity: {}\nEntropy: {}\nContrast: {}\n".format(gso.H, gso.E, gso.C))
 
   def set_image_zoom(self, value):
     double_value = value/100

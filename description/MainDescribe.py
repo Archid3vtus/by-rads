@@ -1,5 +1,5 @@
 from description.GrayScaleOccurrence import GrayScaleOccurrence
-from PIL import Image
+from PIL import Image, ImageOps
 
 class MainDescribe:
   id: int
@@ -26,7 +26,7 @@ class MainDescribe:
 
     image_mod = None
     for T in self.tone:
-      image_mod = self.image.quantize(T)
+      image_mod = ImageOps.equalize(self.image).quantize(T)
       for R in self.resolution:
         image_mod = image_mod.resize((R, R))
         for r in self.radius:

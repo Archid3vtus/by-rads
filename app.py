@@ -48,7 +48,7 @@ class master(Tk):
 
     image_characteristics = []
     for image in data_store:
-      md = MainDescribe(image, birads_type)
+      md = MainDescribe(birads_type, path=image)
       image_characteristics = image_characteristics + md.generate_characteristics()
 
     csv_data = CsvUtil("{}_calculated.csv".format(birads_type), ["id", "name", "resolution", "tones", "radius", "direction_vertical", "direction_horizontal", "homogeneity", "entropy", "contrast"])
@@ -76,7 +76,7 @@ class master(Tk):
     true = []
     pred = []
     for path in path_list:
-      md = MainDescribe(path["name"], 0)
+      md = MainDescribe(0, path=path["name"])
       true.append(int(path["id"]))
       a = md.generate_characteristics()
 
@@ -101,9 +101,7 @@ class master(Tk):
         if(i != j):
           esp -= hit / 300
 
-    # print("Matriz de confusão:\n{}\n\nSensibilidade média: {}\nEspecificidade média: {}\n".format(confusion, sen, esp))
     messagebox.showinfo("Resultados", "Matriz de confusão:\n{}\n\nSensibilidade média: {}\nEspecificidade média: {}\n".format(confusion, sen, esp))
-
 
     print("end\n\n")
 

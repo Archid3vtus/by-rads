@@ -1,7 +1,8 @@
-from tkinter import Canvas, Scrollbar, Frame, NW, BOTTOM, RIGHT, X, Y
+from tkinter import Canvas, Scrollbar, Frame, NW, BOTTOM, RIGHT, X, Y, messagebox
 from PIL import Image, ImageOps, ImageTk
 from components.ResolutionDialog import ResolutionDialog
 from description.GrayScaleOccurrence import GrayScaleOccurrence
+from description.MainDescribe import MainDescribe
 
 class Canvas(Canvas):
   def __init__(self, master):
@@ -14,6 +15,8 @@ class Canvas(Canvas):
     self.select_region_enable = False
     self.load = None
     self.load_bkp = None
+    self.cropped_resolution = None
+    self.gray = 256
 
     super().__init__(self.master, height=self.height, width=self.width, cursor="tcross", bg="grey")
     self._add_scroll_bars()
@@ -32,8 +35,10 @@ class Canvas(Canvas):
     self.parent_frame.toolbar.change_button_state(3, "disabled")
     self.parent_frame.toolbar.change_button_state(4, "disabled")
     self.parent_frame.toolbar.change_button_state(5, "disabled")
+    self.parent_frame.toolbar.change_button_state(6, "disabled")
 
   def load_image_crop(self, resolution):
+    self.cropped_resolution = resolution[0]
     cropped = self.load.crop((self.region_info["initial_x"], self.region_info["initial_y"], self.region_info["final_x"], self.region_info["final_y"]))
     resized = cropped.resize(resolution)
     self.load = self.load_bkp = resized
@@ -46,8 +51,10 @@ class Canvas(Canvas):
     self.parent_frame.toolbar.change_button_state(3, "active")
     self.parent_frame.toolbar.change_button_state(4, "active")
     self.parent_frame.toolbar.change_button_state(5, "active")
+    self.parent_frame.toolbar.change_button_state(6, "active")
 
   def set_color_spectre(self, colors_qt):
+    self.gray = colors_qt
     self.load = self.load_bkp
     configured = self.load.quantize(colors_qt)
     #self.load_bkp = self.load
@@ -62,6 +69,28 @@ class Canvas(Canvas):
     double_value = value/100
     zoomed = self.load.resize((int(self.load.size[0]*double_value), int(self.load.size[1]*double_value)))
     self.insert_image(zoomed)
+
+  def classificate(self):
+    #print("vamo classificar aqui")
+    md = MainDescribe(0, image=self.load)
+    characteristic_list = md.generate_specific(self.cropped_resolution, self.gray)
+    prediction: list[int] = [0,0,0,0]
+    for charac in characteristic_list:
+      b = self.parent_frame.master.di.predict(md.characteristics_list(charac))
+      prediction[b[0]-1] += 1
+    birads = prediction.index(max(prediction)) + 1
+    to_show = ""
+
+    if birads == 1:
+      to_show = "I"
+    elif birads == 2:
+      to_show = "II"
+    elif birads == 3:
+      to_show = "III"
+    elif birads == 4:
+      to_show = "IV"
+
+    messagebox.showinfo("Identificado", "BIRADS {}".format(to_show))
 
   def equalize(self):
     #self.load = self.load_bkp

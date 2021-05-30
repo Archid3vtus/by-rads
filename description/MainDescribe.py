@@ -2,14 +2,18 @@ from description.GrayScaleOccurrence import GrayScaleOccurrence
 from PIL import Image
 
 class MainDescribe:
-  path: str
   id: int
   radius: tuple[int]
   direction: tuple[tuple[int, int]]
   tone: tuple[int]
   resolution: tuple[int]
 
-  def __init__(self, path: str, id: int) -> None:
+  def __init__(self, id: int, path: str = "", image = None) -> None:
+    if path == "":
+      self.image = image
+    else:
+      self.image = Image.open(path)
+
     self.path = path
     self.id = id
     self.radius = (1,2,4,8,16)
@@ -19,11 +23,10 @@ class MainDescribe:
 
   def generate_characteristics(self) -> list[any]:
     response = []
-    image = Image.open(self.path)
 
     image_mod = None
     for T in self.tone:
-      image_mod = image.quantize(T)
+      image_mod = self.image.quantize(T)
       for R in self.resolution:
         image_mod = image_mod.resize((R, R))
         for r in self.radius:
@@ -38,5 +41,17 @@ class MainDescribe:
 
   def characteristics_list(self, characteristics) -> list[any]:
     return [int(characteristics["resolution"]), int(characteristics["tones"]), int(characteristics["radius"]), int(characteristics["direction_vertical"]), int(characteristics["direction_horizontal"]), float(characteristics["homogeneity"]), float(characteristics["entropy"]), float(characteristics["contrast"])]
+
+  def generate_specific(self, resolution, gray) -> list[any]:
+    response = []
+
+    for r in self.radius:
+      for d in self.direction:
+        gso = GrayScaleOccurrence(gray, self.image)
+        gso.relate(r, d[0], d[1])
+        homogeneity, entropy, contrast = gso.get_haralick()
+        response.append({"id": self.id, "name": self.path, "resolution": "{}".format(resolution), "tones": "{}".format(gray), "radius": r, "direction_vertical": d[0], "direction_horizontal": d[1], "homogeneity": homogeneity,"entropy": entropy,"contrast": contrast})
+
+    return response
 
   

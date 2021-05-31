@@ -1,3 +1,9 @@
+'''
+Componentes:
+  Ricardo Xavier Sena - 481694
+  Yuri Cancela Braga - 553286
+'''
+
 from tkinter import *
 
 class ResolutionDialog():

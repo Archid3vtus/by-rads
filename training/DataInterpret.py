@@ -1,3 +1,9 @@
+'''
+Componentes:
+  Ricardo Xavier Sena - 481694
+  Yuri Cancela Braga - 553286
+'''
+
 import numpy as np
 from sklearn.pipeline import Pipeline, make_pipeline
 from sklearn.preprocessing import StandardScaler

@@ -1,3 +1,9 @@
+'''
+Componentes:
+  Ricardo Xavier Sena - 481694
+  Yuri Cancela Braga - 553286
+'''
+
 from PIL import Image
 import numpy as np
 from numpy.core.shape_base import block

@@ -1,3 +1,9 @@
+'''
+Componentes:
+  Ricardo Xavier Sena - 481694
+  Yuri Cancela Braga - 553286
+'''
+
 from tkinter import Frame, LEFT, BOTH
 from components.Canvas import Canvas
 from components.ToolBar import ToolBar

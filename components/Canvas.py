@@ -1,3 +1,9 @@
+'''
+Componentes:
+  Ricardo Xavier Sena - 481694
+  Yuri Cancela Braga - 553286
+'''
+
 import time
 from tkinter import Canvas, Scrollbar, Frame, NW, BOTTOM, RIGHT, X, Y, messagebox
 from PIL import Image, ImageOps, ImageTk

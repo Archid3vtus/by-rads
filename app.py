@@ -1,4 +1,5 @@
 import math
+import time
 from training.DataInterpret import DataInterpret
 from description.CsvUtil import CsvUtil
 from description.MainDescribe import MainDescribe
@@ -33,6 +34,7 @@ class master(Tk):
       self.app.canvas.load_image(path)
 
   def open_file_to_train(self):
+    start = time.time()
     path: list[str] = filedialog.askopenfilenames(parent=self, title="Choose a file")
     birads_type:int = simpledialog.askinteger("Input", "What's the BIRADS type?", parent=self)
     images: list[str] = []
@@ -56,8 +58,11 @@ class master(Tk):
     csv_data.write_dict(image_characteristics)
     csv_nodata.write_str_list(no_store)
     print("done!")
+    end = time.time()
+    print("Tempo de execução para crianção de métricas: {}".format(end - start, ".2f"))
 
   def load_data_csv(self):
+    start = time.time()
     data = []
     for i in [1,2,3,4]:
       csv = CsvUtil("{}_calculated.csv".format(i), None)
@@ -69,8 +74,11 @@ class master(Tk):
     if len(data) > 0:
       self.di = DataInterpret(data)
       self.di.train()
+      end = time.time()
+      print("Tempo de execução do treinamento: {}".format(end - start, '.2f'))
 
   def identify(self):
+    start = time.time()
     #path = filedialog.askopenfilename()
     path_list = self.get_ignored()
     true = []
@@ -101,9 +109,13 @@ class master(Tk):
         if(i != j):
           esp -= hit / 300
 
-    messagebox.showinfo("Resultados", "Matriz de confusão:\n{}\n\nSensibilidade média: {}\nEspecificidade média: {}\n".format(confusion, sen, esp))
+    # acuracia
+    acc = self.di.accuracy_score(true, pred)
 
-    print("end\n\n")
+    end = time.time()
+
+    print("Tempo de execução da identificação: {}".format(end - start, ".2f"))
+    messagebox.showinfo("Resultados", "Matriz de confusão:\n{}\n\nSensibilidade média: {}\nEspecificidade média: {}\nPrecisão: {}\n".format(confusion, sen, esp, acc))
 
   def get_ignored(self):
     data = []

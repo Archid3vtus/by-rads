@@ -1,3 +1,4 @@
+import time
 from tkinter import Canvas, Scrollbar, Frame, NW, BOTTOM, RIGHT, X, Y, messagebox
 from PIL import Image, ImageOps, ImageTk
 from components.ResolutionDialog import ResolutionDialog
@@ -29,13 +30,18 @@ class Canvas(Canvas):
     self.load = Image.open(path)
     self.insert_image(self.load)
     self.select_region_enable = True
+    width, height = self.load.size
     self.parent_frame.toolbar.change_button_state(0, "disabled")
     self.parent_frame.toolbar.change_button_state(1, "disabled")
     self.parent_frame.toolbar.change_button_state(2, "disabled")
     self.parent_frame.toolbar.change_button_state(3, "disabled")
     self.parent_frame.toolbar.change_button_state(4, "disabled")
     self.parent_frame.toolbar.change_button_state(5, "disabled")
-    self.parent_frame.toolbar.change_button_state(6, "disabled")
+    if width == 128:
+      self.parent_frame.toolbar.change_button_state(6, "active")
+      self.cropped_resolution = 128
+    else:
+      self.parent_frame.toolbar.change_button_state(6, "disabled")
 
   def load_image_crop(self, resolution):
     self.cropped_resolution = resolution[0]
@@ -67,9 +73,15 @@ class Canvas(Canvas):
     self.insert_image(zoomed)
 
   def classificate(self):
+    start = time.time()
     #print("vamo classificar aqui")
     md = MainDescribe(0, image=self.load)
-    characteristic_list = md.generate_specific(self.cropped_resolution, self.gray)
+    characteristic_list = []
+    if self.cropped_resolution == 128:
+      print("deu certinho, valeu")
+      characteristic_list = md.generate_characteristics()
+    else:
+      characteristic_list = md.generate_specific(self.cropped_resolution, self.gray)
     prediction: list[int] = [0,0,0,0]
     for charac in characteristic_list:
       b = self.parent_frame.master.di.predict(md.characteristics_list(charac))
@@ -86,6 +98,8 @@ class Canvas(Canvas):
     elif birads == 4:
       to_show = "IV"
 
+    end = time.time()
+    print("Tempo de execução da classificação: {}".format(end - start, ".2f"))
     messagebox.showinfo("Identificado", "BIRADS {}".format(to_show))
 
   def equalize(self):

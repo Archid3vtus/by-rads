@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.pipeline import Pipeline, make_pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix, accuracy_score
 
 class DataInterpret:
   training_data: np.array
@@ -29,4 +29,7 @@ class DataInterpret:
 
   def confusion_matrix(self, true, pred, labels=None):
     return confusion_matrix(true, pred, labels=labels)
+
+  def accuracy_score(self, y_true, y_pred):
+    return accuracy_score(y_true, y_pred)
 
